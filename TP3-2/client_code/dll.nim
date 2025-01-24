@@ -1,8 +1,6 @@
 import winim/lean
-import std/httpclient
-import std/os  
+import std/httpclient 
 import std/strutils
-import typetraits
 
 proc NimMain() {.cdecl, importc.}
 
