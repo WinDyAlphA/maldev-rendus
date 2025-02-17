@@ -16,8 +16,29 @@ proc generateXorStrings(key: array[3, int]): tuple[user32, messageBox: string] =
     
     return (user32Xor, messageBoxXor)
 
+proc launchRandomFunction(): string =
+    let baseFunction = chr(ord('a') + rand(0..14)) & ".nim"
+    let path1 = "functions/" & baseFunction
+    if fileExists(path1):
+        let content = readFile(path1)
+        echo fmt"Contenu de {path1}:"
+        echo content
+        return content
+    else:
+        let path2 = "TP4/functions/" & baseFunction
+        if fileExists(path2):
+            let content = readFile(path2)
+            echo fmt"Contenu de {path2}:"
+            echo content
+            return content
+        else:
+            echo fmt"Le fichier n'existe pas ni dans {path1} ni dans {path2}"
+
 proc generatePolymorphicVersion() =
     randomize()
+    var junkCode1 = launchRandomFunction()
+    var junkCode2 = launchRandomFunction()
+    var junkCode3 = launchRandomFunction()
     let key = generateXorKey()
     let (user32Xor, messageBoxXor) = generateXorStrings(key)
     var newCode = "import winim\nimport strutils\n\n"
@@ -57,8 +78,11 @@ else:
   echo "Impossible de résoudre l'adresse de MessageBoxA"
     """
     newCode.add(xorString & "\n\n")
+    newCode.add(junkCode1 & "\n\n")
     newCode.add(getApiAddress & "\n\n")
+    newCode.add(junkCode2 & "\n\n")
     newCode.add(mainproc & "\n")
+    newCode.add(junkCode3 & "\n\n")
     let newFileName = "TP4/polymorphic_" & $rand(1000..9999) & ".nim"
     writeFile(newFileName, newCode)
     discard execShellCmd("nim c -d:release " & newFileName)
